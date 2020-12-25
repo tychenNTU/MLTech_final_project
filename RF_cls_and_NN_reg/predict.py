@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
-import util
+import sys
+DATA_UTIL_PATH = "../"
+sys.path.append(DATA_UTIL_PATH)
+import datautil
 from sklearn.externals import joblib
 import tensorflow.keras as keras 
 
@@ -13,7 +16,7 @@ nn_train_data = nn_train_data[(nn_train_data['adr'] < 1000) & (nn_train_data['ad
 nn_train_data = nn_train_data[nn_train_data['is_canceled'] == 0] # only use the uncanceled orders to train
 
 # get the nn_preprocessor and the default training features
-nn_preprocessor, nn_features_spec = util.get_the_data_preprocessor()
+nn_preprocessor, nn_features_spec = datautil.get_the_data_preprocessor()
 
 # transform the test data
 X_train_nn = nn_preprocessor.fit_transform(nn_train_data)
@@ -23,7 +26,7 @@ X_test_nn = nn_preprocessor.transform(test_data[nn_features_spec])
 # the followings preprocess the test for random forest classifier
 rf_train_data = pd.read_csv('../train.csv')
 rf_train_data = rf_train_data[(rf_train_data['adr'] < 1000) & (rf_train_data['adr'] > -100)]
-rf_preprocessor, rf_features_spec = util.get_the_data_preprocessor()
+rf_preprocessor, rf_features_spec = datautil.get_the_data_preprocessor()
 
 # transform the test data for random forest classifier
 X_train_rf = rf_preprocessor.fit_transform(rf_train_data)
@@ -37,7 +40,7 @@ test_data["is_canceled"] = rf_clf.predict(X_test_rf) # predicted is_canceld
 test_data["adr"] = nn_reg.predict(X_test_nn)         # predicted adr
 
 # compute the predicted label
-revenue_df = util.get_revenue_df(test_data)
+revenue_df = datautil.get_revenue_df(test_data)
 revenue_df["revenue_label"] = revenue_df["revenue"].apply(lambda revenue: int(revenue/10000))
 
 # save the predicted result
