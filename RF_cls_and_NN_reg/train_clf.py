@@ -4,13 +4,13 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split, KFold, cross_validate, cross_val_score
 from sklearn.externals import joblib
-import util
+import datautil
 
 full_data = pd.read_csv('../train.csv')
 full_data = full_data[(full_data['adr'] < 1000) & (full_data['adr'] > -100)] # remove outliers
 
 # get the preprocessor and the default training features
-preprocessor, features_spec = util.get_the_data_preprocessor()
+preprocessor, features_spec = datautil.get_the_data_preprocessor()
 
 # split data into input and labeled
 X_train_full_raw = full_data[features_spec]

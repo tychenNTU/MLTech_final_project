@@ -1,9 +1,12 @@
 # common:
 import pandas as pd
 import numpy as np
+import sys
 # for ML:
 import tensorflow.keras as keras
-import util
+DATA_UTIL_PATH = "../"
+sys.path.append(DATA_UTIL_PATH)
+import datautil
 
 VAL_RATIO = 0.25 # tatio for validation data
 
@@ -25,7 +28,7 @@ full_data = full_data[(full_data['adr'] < 1000) & (full_data['adr'] > -100)] # r
 full_data = full_data[full_data['is_canceled'] == 0] # only use the uncanceled orders to train
 
 # get the preprocessor and the default training features
-preprocessor, features_spec = util.get_the_data_preprocessor()
+preprocessor, features_spec = datautil.get_the_data_preprocessor()
 
 # split data into input and label
 X_train_full_raw = full_data[features_spec]
