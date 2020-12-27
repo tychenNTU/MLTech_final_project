@@ -17,10 +17,12 @@ num_features = ["lead_time","arrival_date_week_number","arrival_date_day_of_mont
                 "previous_bookings_not_canceled","agent","company",
                 "required_car_parking_spaces", "total_of_special_requests"]
 
+# categorical features
 cat_features = ["hotel","arrival_date_month","meal","market_segment",
                 "distribution_channel","reserved_room_type","deposit_type","customer_type"]
 
 # this function will generate a data preprocessor corresponding to the given training features
+# return (the preprocessed feature, the original feature)
 def get_the_data_preprocessor(num_features=num_features, cat_features=cat_features, std_num_feature=True):
     """
     This function will return return a scikit-learn ColumnTransformer that process the data and
@@ -36,16 +38,15 @@ def get_the_data_preprocessor(num_features=num_features, cat_features=cat_featur
     # preprocess numerical feats:
     # for most num cols, except the dates, 0 is the most logical choice as fill value
     # and here no dates are missing.
-    num_transformer = SimpleImputer(strategy="constant")
     num_transformer = Pipeline(steps=[
-        ("imputer", SimpleImputer(strategy="constant")),
+        ("imputer", SimpleImputer(strategy="constant")), # constant imputer means to fill missing value with 0
         ("std_scaler", StandardScaler()),
     ]) if std_num_feature else Pipeline(steps=[("imputer", SimpleImputer(strategy="constant"))])
 
     # Preprocessing for categorical features:
     cat_transformer = Pipeline(steps=[
         ("imputer", SimpleImputer(strategy="constant", fill_value="Unknown")),
-        ("onehot", OneHotEncoder(handle_unknown='ignore'))])
+        ("onehot", OneHotEncoder(handle_unknown='ignore'))]) # do not raise error when encountering unknown values, fill with all zeros instead
 
     # Bundle preprocessing for numerical and categorical features:
     preprocessor = ColumnTransformer(transformers=[("num", num_transformer, num_features),
@@ -63,6 +64,7 @@ def get_arrival_date_column(input_data, month_to_num=False):
         1. "arrival_date_day_of_month": str or int
         2. "arrival_date_year": str or int
         3. "arrival_date_month": str of the name of the month (e.g. July)
+    Return format example: "2017-01-05"
     """
 
     month_dict = {'January' : '1',
@@ -161,7 +163,7 @@ def get_revenue_df(input_data):
 
 def split_data_by_date(input_data, val_ratio, rand_seed=42, add_arrival_date=False):
     """
-    This function will choose the orders of specific days (ramdomly selected) as validation set.
+    This function will choose the orders of specific days (randomly selected) as validation set.
     The remaining orders will be left as training data.
     """
     # preprocess
