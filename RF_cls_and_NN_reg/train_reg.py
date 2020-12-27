@@ -8,7 +8,7 @@ DATA_UTIL_PATH = "../"
 sys.path.append(DATA_UTIL_PATH)
 import datautil
 
-VAL_RATIO = 0.25 # tatio for validation data
+VAL_RATIO = 0.25 # ratio for validation data
 
 # this function just build simple NN model
 def build_model(input_shape, n_hidden=2, n_neurons=30, learning_rate=1e-3):
@@ -49,6 +49,6 @@ nn_reg = build_model(input_shape=X_train.shape[1:])
 
 # train the model and save the result
 history = nn_reg.fit(X_train, y_train, epochs=2000, validation_data=(X_val, y_val),
-           callbacks=[keras.callbacks.EarlyStopping(patience=30, restore_best_weights=True)])
+           callbacks=[keras.callbacks.EarlyStopping(patience=30, restore_best_weights=True)]) # wait for 30 more epoch after seeing the first sign of no improvement & reverts to the weights that obtained the highest monitored score value
 nn_reg.save("./adr_regressor.h5")
 pd.DataFrame(history.history).to_csv("nn_training_history.csv", index=False)
