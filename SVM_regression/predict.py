@@ -5,9 +5,7 @@ import sys
 DATA_UTIL_PATH = "../"
 sys.path.append(DATA_UTIL_PATH)
 import datautil
-import util
 from sklearn.externals import joblib
-import tensorflow.keras as keras 
 
 test_data = pd.read_csv(os.path.join(os.path.dirname(__file__), "../test.csv"))
 train_data = pd.read_csv(os.path.join(os.path.dirname(__file__), '../train.csv'))
@@ -34,14 +32,13 @@ rf_preprocessor, rf_features_spec = datautil.get_the_data_preprocessor()
 X_train_rf = rf_preprocessor.fit_transform(rf_train_data)
 X_test_rf = rf_preprocessor.transform(test_data[rf_features_spec])
 
-
 # load model
-nn_reg = keras.models.load_model("adr_regressor.h5")
-rf_clf = joblib.load("./rf_cls.model")
+svm_reg = joblib.load("SVM.model")
+rf_clf = joblib.load("../RF_cls_and_NN_reg/rf_cls.model")
 
 # make prediction on the test data
 test_data["is_canceled"] = rf_clf.predict(X_test_rf) # predicted is_canceld
-test_data["adr"] = nn_reg.predict(X_test_nn)         # predicted adr
+test_data["adr"] = svm_reg.predict(X_test_nn)         # predicted adr
 
 # compute the predicted label
 revenue_df = datautil.get_revenue_df(test_data)
@@ -51,3 +48,4 @@ revenue_df["revenue_label"] = revenue_df["revenue"].apply(lambda revenue: int(re
 test_no_label_data = pd.read_csv("../test_nolabel.csv")
 test_no_label_data["label"] = np.array(revenue_df["revenue_label"])
 test_no_label_data.to_csv("predicted_label.csv", index=False)
+
