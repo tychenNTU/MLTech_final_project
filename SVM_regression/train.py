@@ -28,7 +28,7 @@ param_dist = {'kernel':['linear','rbf'],
                   'C':reciprocal(1,100),
                   'gamma':expon(scale=1.0)}
 regr = RandomizedSearchCV(SVR(), param_distributions=param_dist, n_iter=100, cv=3,
-                               scoring=make_scorer(mean_squared_error, greater_is_better=False), verbose=3, n_jobs=-1, random_state=42)
+                               scoring='neg_mean_squared_error', verbose=3, n_jobs=-1, random_state=42)
 # param = {'kernel' : ('linear', 'poly', 'rbf', 'sigmoid'),'C' : [1,5,10],'degree' : [3,8],'coef0' : [0.01,10,0.5],'gamma' : ('auto','scale')},
 # regr = RandomizedSearchCV(estimator = SVR(), param_grid = param, scoring = make_scorer(mean_squared_error, greater_is_better=False), cv = 3, n_jobs = -1, verbose = 3)
 regr.fit(X_transformed,y_train_full)
