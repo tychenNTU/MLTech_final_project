@@ -33,7 +33,7 @@ X_train_rf = rf_preprocessor.fit_transform(rf_train_data)
 X_test_rf = rf_preprocessor.transform(test_data[rf_features_spec])
 
 # load model
-svm_reg = joblib.load("SVM.model")
+svm_reg = joblib.load("svm.model")
 rf_clf = joblib.load("../RF_cls_and_NN_reg/rf_cls.model")
 
 # make prediction on the test data

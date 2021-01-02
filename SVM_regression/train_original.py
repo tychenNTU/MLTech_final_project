@@ -9,7 +9,7 @@ from joblib import dump, load
 VAL_RATIO = 0.25
 import time
 from sklearn.metrics import mean_squared_error, make_scorer
-from sklearn.model_selection import RandomizedSearchCV
+from sklearn.model_selection import RandomizedSearchCV, cross_val_score
 from scipy.stats import expon, reciprocal
 
 full_data = pd.read_csv('../train.csv')
@@ -24,16 +24,9 @@ X_train_full_raw = full_data[features_spec]
 y_train_full = np.array(full_data['adr'])
 X_transformed = preprocessor.fit_transform(X_train_full_raw)
 
-param_dist = {'kernel':['linear','rbf'],
-                  'C':reciprocal(1,100),
-                  'gamma':expon(scale=1.0)}
-                  
-regr = RandomizedSearchCV(SVR(), param_distributions=param_dist, n_iter=100, cv=3,
-                               scoring='neg_mean_squared_error', verbose=3, n_jobs=-1, random_state=42)
-regr.fit(X_transformed,y_train_full)
-print('Best parameters: ' + str(regr.best_params_))
-print('Best score: ' + str(regr.best_score_))
+cv_results = cross_val_score(SVR(), X_transformed, y_train_full, 
+                            cv=3, scoring="neg_mean_squared_error", verbose=3, n_jobs=-1)
+mean_score = round(np.mean(cv_results), 4)
+print("MSE of the default SVR model: " + str(mean_score*-1))
 
-# save grid search 
-dump(regr.best_estimator_, 'svm.model')
 
