@@ -51,3 +51,23 @@ Thus, we used `RandomizedSearchCV` instead to cap the maximum parameter combinat
 The parameter space that we searched:
 
 ![](./img/svr_param.png)
+
+### XGBoost Regression
+
+We then tried the default XGBoost regression model and obtained the following result. Both the training time and MSE are better than the default support vector regression model.
+
+![](./img/xgboost_default.png)
+
+And the MSE of the best parameter is 770:
+
+![](./img/xgboost_best.png)
+
+### LightGBM Regression
+
+We also tried the default LightGBM regression model which gave us an even better result:
+
+![](./img/lightgbm_default.png)
+
+And the MSE of the best parameter is 788:
+
+![](./img/lightgbm_best.png)

@@ -233,3 +233,16 @@ def split_data_by_date(input_data, val_ratio, rand_seed=42, add_arrival_date=Fal
         train_data = train_data.drop(['arrival_date'], axis=1)
     return train_data, val_data
 
+def get_preprocessed_xy():
+    full_data = pd.read_csv('../train.csv')
+    full_data = full_data[(full_data['adr'] < 1000) & (full_data['adr'] > -100)] # remove outliers
+    full_data = full_data[full_data['is_canceled'] == 0] # only use the uncanceled orders to train
+
+    # get the preprocessor and the default training features
+    preprocessor, features_spec = get_the_data_preprocessor()
+
+    # split data into input and label
+    X_train_full_raw = full_data[features_spec]
+    y_train_full = np.array(full_data['adr'])
+    X_transformed = preprocessor.fit_transform(X_train_full_raw)
+    return X_transformed, y_train_full
