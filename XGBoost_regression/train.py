@@ -23,7 +23,7 @@ param_grid = {
     'n_estimators': [100]
 }
 
-gsearch1 = RandomizedSearchCV(estimator = xgboost.XGBRegressor(), param_distributions = param_grid, verbose=3,scoring='neg_mean_squared_error', cv=3, n_iter=100, random_state=42)
+gsearch1 = RandomizedSearchCV(estimator = xgboost.XGBRegressor(), param_distributions = param_grid, verbose=3,scoring='neg_mean_squared_error', cv=3, n_iter=100, random_state=42, n_jobs=-1)
 gsearch1.fit(train_x,train_y)
 print('best params')
 print (gsearch1.best_params_)

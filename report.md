@@ -33,6 +33,10 @@ However, the framework we mentioned above has a possible drawback: it focuses on
 
 ### Random Forest
 
+We performed grid search for the random forest model and obtained the best parameters. The accuracy score for 5-fold cross validation is ~0.84. Total training time is 1.6 minutes.
+
+![](./img/random_forest.png)
+
 ### Neural Network
 
 ### Support Vector Regression
@@ -61,6 +65,11 @@ We then tried the default XGBoost regression model and obtained the following re
 And the MSE of the best parameter is 770:
 
 ![](./img/xgboost_best.png)
+
+I then tried two feature selection algorithm, one is sklearn's `SelectFromModel`, and the other is `PCA`. However, both didn't give a better result than using the original feature set. It is obvious that the MSE becomes higher as the number of feature decreases.
+
+![](./img/SelectFromModel.png)
+![](./img/pca.png)
 
 ### LightGBM Regression
 

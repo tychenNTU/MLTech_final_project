@@ -6,7 +6,7 @@ DATA_UTIL_PATH = "../"
 sys.path.append(DATA_UTIL_PATH)
 import datautil
 import util
-from sklearn.externals import joblib
+from joblib import dump, load
 import tensorflow.keras as keras 
 
 test_data = pd.read_csv(os.path.join(os.path.dirname(__file__), "../test.csv"))
@@ -24,7 +24,6 @@ nn_preprocessor, nn_features_spec = datautil.get_the_data_preprocessor()
 X_train_nn = nn_preprocessor.fit_transform(nn_train_data)
 X_test_nn = nn_preprocessor.transform(test_data[nn_features_spec])
 
-
 # the followings preprocess the test for random forest classifier
 rf_train_data = train_data
 rf_train_data = rf_train_data[(rf_train_data['adr'] < 1000) & (rf_train_data['adr'] > -100)]
@@ -37,7 +36,7 @@ X_test_rf = rf_preprocessor.transform(test_data[rf_features_spec])
 
 # load model
 nn_reg = keras.models.load_model("adr_regressor.h5")
-rf_clf = joblib.load("./rf_cls.model")
+rf_clf = load("./rf_cls.model")
 
 # make prediction on the test data
 test_data["is_canceled"] = rf_clf.predict(X_test_rf) # predicted is_canceld
