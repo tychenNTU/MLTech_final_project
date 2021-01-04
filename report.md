@@ -80,3 +80,15 @@ We also tried the default LightGBM regression model which gave us an even better
 And the MSE of the best parameter is 788:
 
 ![](./img/lightgbm_best.png)
+
+### Classification
+
+We tried random forest, XGBoost, and LightGBM and found that the base model of LightGBM gave us the best AUC score of ~0.866. We then tried randomized search to tune the hyperparameter. However, the search didn't give us a better model. The parameter space we searched for and the results are shown below.
+
+![](./img/lightgbm_param.png)
+
+Result for the base model:
+![](./img/lightgbm_base.png)
+
+Result after tuning the parameters:
+![](./img/lightgbm_param_result.png)
