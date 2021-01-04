@@ -97,6 +97,53 @@ def get_arrival_date_column(input_data, month_to_num=False):
     return new_df
 
 
+def get_date_difference_col(input_data):
+    """
+    This function add a new column called date_difference.
+    The input data must contain "arrival_date" and "reservation_status_date"
+    column value = date1 - date2 (unit: days)
+    date1: arrival_date
+    date2: reservation_status_date
+    """
+    def compute_date_difference(row):
+        arrival_date = datetime.strptime(row["arrival_date"], "%Y-%m-%d")
+        reservation_status_date = datetime.strptime(row["reservation_status_date"], "%Y-%m-%d")
+        date_diff = (arrival_date - reservation_status_date).days
+        return date_diff
+    result_data = input_data.copy()
+    result_data["date_diff"] = result_data.apply(compute_date_difference, axis=1)
+    for _, row in result_data.iterrows():
+        row["date_diff"] = compute_date_difference(row)
+    return result_data
+
+
+def get_weekday_col(input_data):
+    """
+    This functino add a new "weekday" (day of the week) column from arrival_date column.
+    """
+    result_data = input_data.copy()
+    result_data["weekday"] = result_data["arrival_date"].apply(lambda date: datetime.strptime(date, "%Y-%m-%d").weekday())
+    return result_data
+
+
+def add_group_by_mean_col(input_data, by_col, target_col, group_na=False, avg_target_val_dict=None, na_val=-1):
+    """
+    This function will add a new row using .groupby() function.
+    It will return two objcets:
+    1. result_data: the dataframe with the new compute column
+    2. the dictionary that maps by_col column value to the target_col column value
+    """
+    result_data = input_data.copy()
+    if avg_target_val_dict is None:
+        if group_na:
+            result_data = result_data.fillna(na_val)
+            group_by_object = result_data.groupby(by_col)
+        else: group_by_object = result_data.groupby(by_col)
+        avg_target_val_dict = dict(group_by_object[target_col].mean())
+    result_data[by_col + "_avg_" + target_col] = result_data[by_col].map(avg_target_val_dict)
+    return result_data, avg_target_val_dict
+
+
 # functions to compute the daily revenue
 def get_revenue_df(input_data):
     """
